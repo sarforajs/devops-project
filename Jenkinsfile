@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "kubesarforaj/devops-app"
-        TAG = "${BUILD_NUMBER}"
+        TAG = "${BUILD_NUMBER}-${GIT_COMMIT[0..6]}"
     }
 
     stages {
