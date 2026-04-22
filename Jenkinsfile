@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 environment {
     IMAGE_NAME = "kubesarforaj/devops-app"
     TAG = "${BUILD_NUMBER}-${GIT_COMMIT[0..6]}"
@@ -17,13 +16,7 @@ stages {
 
     stage('Security Scan') {
         steps {
-            sh '''
-            trivy image --timeout 10m \
-            --scanners vuln \
-            --exit-code 1 \
-            --severity HIGH,CRITICAL \
-            $IMAGE_NAME:$TAG
-            '''
+            sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE_NAME:$TAG'
         }
     }
 
@@ -43,6 +36,5 @@ stages {
         }
     }
 }
-```
 
 }
