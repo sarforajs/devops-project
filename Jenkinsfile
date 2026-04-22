@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "kubesarforaj/devops-app"
-        TAG = "v2"
+        TAG = "${BUILD_NUMBER}"
     }
 
     stages {
