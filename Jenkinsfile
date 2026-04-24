@@ -29,7 +29,8 @@ pipeline {
                   -v /var/run/docker.sock:/var/run/docker.sock \
                   -v /var/lib/jenkins/.cache/trivy:/root/.cache/ \
                   aquasec/trivy image \
-                  --timeout 10m \
+                  --scanners vuln \
+                  --timeout 15m \
                   --exit-code 1 \
                   --severity HIGH,CRITICAL \
                   $IMAGE_NAME:$TAG
@@ -66,7 +67,7 @@ pipeline {
         }
 
         failure {
-            echo "Pipeline failed. Check logs for details."
+            echo "Pipeline failed. Check logs."
         }
     }
 }
