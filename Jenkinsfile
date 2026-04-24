@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "kubesarforaj/devops-app"
         TAG = "${BUILD_NUMBER}-${GIT_COMMIT[0..6]}"
+        TRIVY_CACHE_DIR = "/var/lib/jenkins/.cache/trivy"
     }
 
     stages {
@@ -22,17 +23,27 @@ pipeline {
             }
         }
 
+        stage('Prepare Trivy Cache') {
+            steps {
+                sh '''
+                mkdir -p $TRIVY_CACHE_DIR
+                sudo chown -R jenkins:jenkins $TRIVY_CACHE_DIR || true
+                '''
+            }
+        }
+
         stage('Security Scan') {
             steps {
                 sh '''
                 docker run --rm \
                   -v /var/run/docker.sock:/var/run/docker.sock \
-                  -v /var/lib/jenkins/.cache/trivy:/root/.cache/ \
+                  -v $TRIVY_CACHE_DIR:/root/.cache/trivy \
                   aquasec/trivy image \
                   --scanners vuln \
                   --timeout 15m \
                   --exit-code 1 \
                   --severity HIGH,CRITICAL \
+                  --cache-dir /root/.cache/trivy \
                   $IMAGE_NAME:$TAG
                 '''
             }
