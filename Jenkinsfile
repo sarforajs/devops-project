@@ -27,9 +27,9 @@ pipeline {
                 sh '''
                 docker run --rm \
                   -v /var/run/docker.sock:/var/run/docker.sock \
-                  -v $HOME/.cache/trivy:/root/.cache/ \
+                  -v /var/lib/jenkins/.cache/trivy:/root/.cache/ \
                   aquasec/trivy image \
-                  --scanners vuln \
+                  --timeout 10m \
                   --exit-code 1 \
                   --severity HIGH,CRITICAL \
                   $IMAGE_NAME:$TAG
@@ -58,16 +58,15 @@ pipeline {
 
     post {
         always {
-            // Clean workspace to avoid disk issues
             cleanWs()
         }
 
         success {
-            echo "✅ Pipeline completed successfully!"
+            echo "Pipeline completed successfully!"
         }
 
         failure {
-            echo "❌ Pipeline failed. Check logs for details."
+            echo "Pipeline failed. Check logs for details."
         }
     }
 }
