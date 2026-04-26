@@ -78,7 +78,8 @@ pipeline {
         }
 
         failure {
-            echo "Pipeline failed. Check logs."
+            echo "Pipeline failed. Rolling back Helm release..."
+            sh 'helm rollback myapp || true'
         }
     }
 }
